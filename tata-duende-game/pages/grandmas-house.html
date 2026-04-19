@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Grandma's House - Tata Duende's Curse</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="story">
+            <p>You lie in your old hammock, swaying gently. Through the window, the jungle looms dark against the stars. An owl calls. Something answers.</p>
+            <p>On the table, Grandma has left you a few things just in case:</p>
+            <ul>
+                <li>A box of matches</li>
+                <li>A small candle</li>
+                <li>A bundle of dried copal incense</li>
+            </ul>
+            <p>Grandma calls from her room: "Don't wander at night, hear? And if you hear crying by the river, don't go near. That's not crying for help. That's La Llorona looking for children to take."</p>
+            <p>You promise. But in your heart, you know you might have to go wherever the answers lead.</p>
+        </div>
+        <div class="choices">
+            <a href="#" onclick="takeItem('matches')" class="btn">Take Matches</a>
+            <a href="#" onclick="takeItem('candle')" class="btn">Take Candle</a>
+            <a href="#" onclick="takeItem('copal')" class="btn">Take Copal</a>
+            <a href="village-morning.html" class="btn">Wait Until Morning</a>
+        </div>
+        <div class="inventory">
+            <h3>Your Inventory</h3>
+            <ul id="inventory-list"></ul>
+        </div>
+    </div>
+    <script src="../js/game.js"></script>
+</body>
+</html>

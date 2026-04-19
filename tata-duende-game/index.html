@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tata Duende's Curse - A Belizean Folklore Adventure</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Tata Duende's Curse</h1>
+        <h2>A Belizean Folklore Adventure</h2>
+        <img src="assets/images/ceiba-tree.jpg" alt="Ceiba Tree" style="max-width:100%; border-radius:10px; margin-bottom:20px;" onerror="this.style.display='none'">
+        <p>Welcome to the village of San Benito Po. The forest is restless. Tata Duente has been angered. Can you lift the curse?</p>
+        <div class="choices">
+            <a href="pages/prologue.html" class="btn" id="continue-btn">Continue Journey</a>
+            <a href="#" onclick="resetGame()" class="btn" id="newgame-btn">New Game</a>
+        </div>
+        <p id="save-warning" style="margin-top:15px; font-style:italic; color:#7b5e3b;"></p>
+    </div>
+    <script src="js/game.js"></script>
+    <script>
+        // Show warning if there is existing game data
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('tataDuenteGame')) {
+                document.getElementById('save-warning').innerText = 'You have a saved game. Continue or start new?';
+            }
+        });
+    </script>
+</body>
+</html>
