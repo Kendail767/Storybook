@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Creek at Dusk - Tata Duende's Curse</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="story">
+            <p>You've walked too long. The sun dips below the trees. The creek darkens. Shadows lengthen.</p>
+            <p>Then you hear it.</p>
+            <p>Crying. A woman, sobbing. Coming from downstream.</p>
+            <p>"Mis hijos... mis hijos... donde estan mis hijos..."</p>
+            <p>Your blood turns cold. La Llorona.</p>
+            <p>The crying grows louder. Closer.</p>
+        </div>
+        <div class="choices">
+            <a href="la-llorona-encounter.html?choice=run" class="btn">Run Toward Village</a>
+            <a href="la-llorona-encounter.html?choice=hide" class="btn">Hide Behind Rocks</a>
+            <a href="la-llorona-encounter.html?choice=holywater" class="btn" id="holywater-btn">Use Holy Water</a>
+            <a href="la-llorona-encounter.html?choice=walk" class="btn">Walk Away Slowly</a>
+        </div>
+        <div class="inventory">
+            <h3>Your Inventory</h3>
+            <ul id="inventory-list"></ul>
+        </div>
+    </div>
+    <script src="../js/game.js"></script>
+    <script>
+        // check if player has holy water before showing that option
+        document.addEventListener('DOMContentLoaded', function() {
+            loadGame();
+            updateInventoryDisplay();
+            if (!gameState.inventory.includes('holy water')) {
+                let btn = document.getElementById('holywater-btn');
+                if (btn) {
+                    btn.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

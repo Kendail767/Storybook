@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>La Llorona - Tata Duende's Curse</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="story" id="story-text">
+            <!-- story will be inserted by javascript based on choice -->
+        </div>
+        <div class="choices" id="next-button">
+            <!-- next button will go here -->
+        </div>
+        <div class="inventory">
+            <h3>Your Inventory</h3>
+            <ul id="inventory-list"></ul>
+        </div>
+    </div>
+    <script src="../js/game.js"></script>
+    <script>
+        // get the choice from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const choice = urlParams.get('choice');
+        const storyDiv = document.getElementById('story-text');
+        const nextDiv = document.getElementById('next-button');
+
+        loadGame();
+
+        if (choice === 'run') {
+            storyDiv.innerHTML = '<p>You run blindly through the dark. Branches scratch your face. The crying follows. Closer. Closer. Cold hands touch your neck—</p><p>You wake at dawn by the creek, soaked, shivering. Your cross is gone.</p>';
+            // remove cross from inventory if they had it
+            const crossIndex = gameState.inventory.indexOf('cross');
+            if (crossIndex !== -1) {
+                gameState.inventory.splice(crossIndex, 1);
+            }
+            gameState.protection = (gameState.protection || 1) - 1;
+            saveGame();
+            nextDiv.innerHTML = '<a href="jungle-path.html" class="btn">Return to Jungle Path</a>';
+
+        } else if (choice === 'hide') {
+            storyDiv.innerHTML = '<p>You press against the rocks, barely breathing. The crying passes, so close you smell wet grave clothes and river mud. Minutes pass. Hours. Finally, birds sing. Dawn breaks. You\'re safe, but too scared to move until sunrise.</p>';
+            nextDiv.innerHTML = '<a href="jungle-path.html" class="btn">Return to Jungle Path</a>';
+
+        } else if (choice === 'holywater') {
+            storyDiv.innerHTML = '<p>You splash holy water toward the sound. A terrible scream echoes through the trees. The crying stops. Absolute silence. Then, fading, fading... gone.</p><p>You have defeated La Llorona. The forest feels quieter now.</p>';
+            gameState.protection = (gameState.protection || 1) + 2;
+            gameState.learnedFolklore.laLlorona = true;
+            saveGame();
+            nextDiv.innerHTML = '<a href="jungle-path.html" class="btn">Continue Your Journey</a>';
+
+        } else if (choice === 'walk') {
+            storyDiv.innerHTML = '<p>You remember Don Chico\'s words. Don\'t run. Don\'t look back. Slow, steady steps away from the water. The crying grows louder, testing you. You keep walking. Praying. Walking.</p><p>After what feels like hours, the crying fades. You reach the village path as dawn breaks. You\'re safe. You passed her test.</p>';
+            gameState.protection = (gameState.protection || 1) + 2;
+            gameState.wisdom = (gameState.wisdom || 0) + 1;
+            saveGame();
+            nextDiv.innerHTML = '<a href="jungle-path.html" class="btn">Continue Your Journey</a>';
+
+        } else {
+            storyDiv.innerHTML = '<p>Something went wrong. Please go back and try again.</p>';
+            nextDiv.innerHTML = '<a href="jungle-path.html" class="btn">Go Back to Jungle</a>';
+        }
+
+        updateInventoryDisplay();
+    </script>
+</body>
+</html>

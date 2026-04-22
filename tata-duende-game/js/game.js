@@ -5,15 +5,33 @@ let gameState = {
     protection: 1,
     tataDuenteFavor: 0,
     wisdom: 0,
-    visitedLocations: []
+    visitedLocations: [],
+    learnedFolklore: {
+        tataDuente: false,
+        laLlorona: false,
+        cadejo: false,
+        anansi: false,
+        sisimito: false
+    },
+    questStage: 'village',
+    curseActive: true,
+    timeOfDay: 'morning'
 };
 
 // Load state from localStorage if exists
 function loadGame() {
     const saved = localStorage.getItem('tataDuenteGame');
     if (saved) {
-        gameState = JSON.parse(saved);
+        let parsed = JSON.parse(saved);
+        // merge with default so new properties don't break old saves
+        for (let key in parsed) {
+            if (gameState.hasOwnProperty(key)) {
+                gameState[key] = parsed[key];
+            }
+        }
     }
+    // make sure currentLocation is updated to the actual page
+    gameState.currentLocation = window.location.pathname.split('/').pop();
 }
 
 // Save state to localStorage
@@ -33,16 +51,26 @@ function takeItem(item) {
     }
 }
 
+// Remove item from inventory (useful for when items get used)
+function removeItem(item) {
+    let index = gameState.inventory.indexOf(item);
+    if (index !== -1) {
+        gameState.inventory.splice(index, 1);
+        saveGame();
+        updateInventoryDisplay();
+    }
+}
+
 // Update inventory display on page
 function updateInventoryDisplay() {
     const invList = document.getElementById('inventory-list');
     if (invList) {
         invList.innerHTML = '';
-        gameState.inventory.forEach(item => {
+        for (let i = 0; i < gameState.inventory.length; i++) {
             const li = document.createElement('li');
-            li.textContent = item;
+            li.textContent = gameState.inventory[i];
             invList.appendChild(li);
-        });
+        }
     }
 }
 
@@ -54,23 +82,6 @@ function trackVisit() {
         saveGame();
     }
 }
-
-// Initialize on each page
-document.addEventListener('DOMContentLoaded', () => {
-    loadGame();
-    trackVisit();
-    updateInventoryDisplay();
-
-    // If we're on grandma's house, maybe show special message if first visit
-    if (gameState.currentLocation === 'grandmas-house.html' && !gameState.visitedLocations.includes('grandmas-house.html')) {
-        // First time here
-    }
-});
-
-// Make functions global for onclick attributes
-window.takeItem = takeItem;
-
-//------------------------------------------------------------------------------
 
 // Folklore knowledge flags
 function learnFolklore(topic) {
@@ -90,31 +101,23 @@ function learnFolklore(topic) {
     saveGame();
 }
 
-// Make it global
-window.learnFolklore = learnFolklore;
-
-// Also ensure that gameState.learnedFolklore is initialized in loadGame
-function loadGame() {
-    const saved = localStorage.getItem('tataDuenteGame');
-    if (saved) {
-        gameState = JSON.parse(saved);
-    } else {
-        // Initialize folklore object if not present
-        gameState.learnedFolklore = {
-            tataDuente: false,
-            laLlorona: false,
-            cadejo: false,
-            anansi: false,
-            sisimito: false
-        };
+// Reset game (clear localStorage and restart)
+function resetGame() {
+    if (confirm('Are you sure? This will erase your current progress.')) {
+        localStorage.removeItem('tataDuenteGame');
+        window.location.href = 'pages/prologue.html';
     }
 }
 
-// Reset game (clear localStorage and restart)
-window.resetGame = function() {
-    if (confirm('Are you sure? This will erase your current progress.')) {
-        localStorage.removeItem('tataDuenteGame');
-        // Redirect to prologue
-        window.location.href = 'pages/prologue.html';
-    }
-};
+// Initialize on each page
+document.addEventListener('DOMContentLoaded', function() {
+    loadGame();
+    trackVisit();
+    updateInventoryDisplay();
+});
+
+// Make functions global for onclick attributes
+window.takeItem = takeItem;
+window.removeItem = removeItem;
+window.learnFolklore = learnFolklore;
+window.resetGame = resetGame;

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Milpa - Tata Duende's Curse</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="story">
+            <p>The cornfield should be tall and green. Instead, stalks lie broken, rotting. Something blackened the earth in spiraling patterns. In the center, a single perfect circle of untouched corn.</p>
+            <p>An offering of respect? Or a warning?</p>
+            <p>You notice small footprints with backwards feet circling the field. In the circle's center lies a single object: a small, carved jade figurine of a man with a huge hat.</p>
+        </div>
+        <div class="choices">
+            <a href="milpa.html?choice=take" class="btn">Take the Jade Figurine</a>
+            <a href="milpa.html?choice=leave" class="btn">Leave an Offering Instead</a>
+            <a href="jungle-path.html" class="btn">Return to Jungle Path</a>
+        </div>
+        <div class="inventory">
+            <h3>Your Inventory</h3>
+            <ul id="inventory-list"></ul>
+        </div>
+    </div>
+    <script src="../js/game.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const choice = urlParams.get('choice');
+        const storyDiv = document.querySelector('.story');
+        const choicesDiv = document.querySelector('.choices');
+
+        loadGame();
+
+        if (choice === 'take') {
+            // replace story with outcome
+            storyDiv.innerHTML = '<p>The moment you touch it, the wind dies. Absolute silence. No birds, no insects, no monkeys. Then laughter - high, mocking, everywhere and nowhere.</p><p>You\'ve taken something belonging to Tata Duente.</p>';
+            gameState.tataDuenteFavor = (gameState.tataDuenteFavor || 0) - 2;
+            gameState.inventory.push('jade figurine');
+            saveGame();
+            // change the choices to just a return button
+            choicesDiv.innerHTML = '<a href="jungle-path.html" class="btn">Return to Jungle Path</a>';
+            updateInventoryDisplay();
+
+        } else if (choice === 'leave') {
+            storyDiv.innerHTML = '<p>You place your offering gently in the circle. The silence continues for a long moment. Then, slowly, a single bird calls. Another answers. Life returns to the forest. In the offering\'s place, you find a small, smooth stone that seems to glow faintly.</p>';
+            gameState.tataDuenteFavor = (gameState.tataDuenteFavor || 0) + 2;
+            gameState.inventory.push('glowing stone');
+            saveGame();
+            choicesDiv.innerHTML = '<a href="jungle-path.html" class="btn">Return to Jungle Path</a>';
+            updateInventoryDisplay();
+        }
+
+        updateInventoryDisplay();
+    </script>
+</body>
+</html>

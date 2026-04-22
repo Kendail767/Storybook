@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Ceiba Grove - Tata Duende's Curse</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="story">
+            <p>You've entered a cathedral. Massive ceiba trees tower above, their thorny trunks reaching toward heaven. The oldest tree in the center is scarred - a huge gash where someone cut it.</p>
+            <p>This is it. The desecration.</p>
+            <p>At the tree's base, you see a small, fresh offering of honey and corn. Someone else is trying to make amends.</p>
+            <p>A voice whispers from the tree. Not threatening. Curious.</p>
+            <p>"Why have you come, child of the village?"</p>
+        </div>
+        <div class="choices">
+            <a href="ceiba-grove.html?choice=offering" class="btn">Leave an Offering</a>
+            <a href="ceiba-grove.html?choice=ask" class="btn">Ask Who Is Speaking</a>
+            <a href="ceiba-grove.html?choice=jade" class="btn" id="jade-btn">Show the Jade Figurine</a>
+            <a href="ceiba-grove.html?choice=copal" class="btn" id="copal-btn">Light the Copal Incense</a>
+            <a href="jungle-path.html" class="btn">Return to Jungle Path</a>
+        </div>
+        <div class="inventory">
+            <h3>Your Inventory</h3>
+            <ul id="inventory-list"></ul>
+        </div>
+    </div>
+    <script src="../js/game.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const choice = urlParams.get('choice');
+        const storyDiv = document.querySelector('.story');
+        const choicesDiv = document.querySelector('.choices');
+        const originalStory = storyDiv.innerHTML;
+
+        loadGame();
+
+        // hide options that player doesn't have items for
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!gameState.inventory.includes('jade figurine')) {
+                let jadeBtn = document.getElementById('jade-btn');
+                if (jadeBtn) jadeBtn.style.display = 'none';
+            }
+            if (!gameState.inventory.includes('copal') && !gameState.inventory.includes('copal pouch')) {
+                let copalBtn = document.getElementById('copal-btn');
+                if (copalBtn) copalBtn.style.display = 'none';
+            }
+            updateInventoryDisplay();
+        });
+
+        if (choice === 'offering') {
+            storyDiv.innerHTML = '<p>You place honey at the tree\'s base. The voice hums thoughtfully.</p><p>"Better. But the wound remains. The one who cut my tree is gone. His debt remains. Find my waterfall. Make true offering. Then we talk."</p><p>The presence fades.</p>';
+            gameState.questStage = 'findWaterfall';
+            saveGame();
+            choicesDiv.innerHTML = '<a href="jungle-path.html" class="btn">Return to Jungle Path</a>';
+
+        } else if (choice === 'ask') {
+            storyDiv.innerHTML = '<p>Laughter. "You know who. You come to my forest, you ask my name? I am Tata Duente. Guardian. Judge. Sometimes... friend. Prove yourself worthy of friendship."</p>';
+            choicesDiv.innerHTML = '<a href="jungle-path.html" class="btn">Return to Jungle Path</a>';
+
+        } else if (choice === 'jade') {
+            storyDiv.innerHTML = '<p>Silence. Then cold fury.</p><p>"You took what was mine. Thief. Now you bring it back expecting thanks?" The wind howls. "Find the waterfall. Return the figure. Then we see."</p>';
+            gameState.tataDuenteFavor = (gameState.tataDuenteFavor || 0) - 3;
+            saveGame();
+            choicesDiv.innerHTML = '<a href="jungle-path.html" class="btn">Return to Jungle Path</a>';
+
+        } else if (choice === 'copal') {
+            storyDiv.innerHTML = '<p>The sweet smoke rises. The voice softens.</p><p>"Ah. My grandmother loved copal. You know respect. Perhaps there is hope. Follow the smoke. It will show you the path to my waterfall."</p><p>A trail of smoke, visible only to you, drifts through the trees.</p>';
+            gameState.tataDuenteFavor = (gameState.tataDuenteFavor || 0) + 2;
+            saveGame();
+            choicesDiv.innerHTML = '<a href="hidden-waterfall.html" class="btn">Follow the Smoke Trail</a>';
+        }
+
+        updateInventoryDisplay();
+    </script>
+</body>
+</html>
