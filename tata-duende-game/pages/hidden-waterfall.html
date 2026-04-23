@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Hidden Waterfall - Tata Duende's Curse</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="story" id="story-text">
+            Loading...
+        </div>
+        <div class="choices" id="choices-area">
+        </div>
+        <div class="inventory">
+            <h3>Your Inventory</h3>
+            <ul id="inventory-list"></ul>
+        </div>
+    </div>
+    <script src="../js/game.js"></script>
+    <script>
+        loadGame();
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const dogChoice = urlParams.get('dog');
+        const storyDiv = document.getElementById('story-text');
+        const choicesDiv = document.getElementById('choices-area');
+        
+        // handle dog outcome first
+        if (dogChoice === 'black') {
+            storyDiv.innerHTML = '<p>The black dog leads you eagerly. Too eagerly. You barely notice the path growing narrower, the edge growing closer. Suddenly, the dog vanishes and you\'re standing at the edge of a cliff, one step from falling.</p><p>You scramble back, heart pounding. Below, rocks wait.</p><p>After catching your breath, you find your way back to the path. Dawn is breaking. You continue your journey, shaken but alive.</p>';
+            gameState.protection = (gameState.protection || 1) - 2;
+            saveGame();
+        } else if (dogChoice === 'white') {
+            storyDiv.innerHTML = '<p>The white dog leads you safely through the dark. Every time you stumble, it waits. Every time you\'re afraid, it presses close. By dawn, you reach a beautiful waterfall, hidden in a valley. The dog licks your hand once, then disappears into the sunrise.</p>';
+            gameState.protection = (gameState.protection || 1) + 2;
+            saveGame();
+        } else {
+            storyDiv.innerHTML = '<p>You sit perfectly still as the dogs watch. Hours pass. Just before dawn, both dogs stand, sniff the air, and trot away together into the forest. As the sun rises, you see the path clearly and find your way to a hidden waterfall.</p>';
+        }
+        
+        // now add the waterfall arrival text
+        storyDiv.innerHTML += '<hr><p>You\'ve found it. Hidden in a valley surrounded by ferns and orchids, water tumbles into a crystal pool. Rainbows dance in the spray. It\'s the most beautiful place you\'ve ever seen.</p><p>Sitting on a rock by the pool is a small figure. No more than three feet tall. Enormous hat. Backwards feet. No thumbs.</p><p>Tata Duente.</p><p>He watches you with ancient eyes. Then grins.</p><p>"Well. You made it. Most don\'t."</p><p>He hops off the rock, walks toward you.</p><p>"Now we talk. You come about the village curse, yes?"</p>';
+        
+        // now show choices based on what player has
+        let hasJade = gameState.inventory.includes('jade figurine');
+        let hasCopal = gameState.inventory.includes('copal') || gameState.inventory.includes('copal pouch');
+        let favor = gameState.tataDuenteFavor || 0;
+        
+        let choicesHtml = '';
+        
+        // always show option to give jade if they have it
+        if (hasJade) {
+            choicesHtml += '<a href="#" onclick="giveJadeOnly()" class="btn">Give back the jade figurine</a>';
+        }
+        
+        // option to offer something personal
+        choicesHtml += '<a href="#" onclick="givePersonal()" class="btn">Offer something personal (a sacrifice)</a>';
+        
+        // option to return to village for proof
+        choicesHtml += '<a href="village-morning.html" class="btn">Return to village for proof of their care</a>';
+        
+        // challenge option
+        choicesHtml += '<a href="#" onclick="challengeTata()" class="btn">Challenge Tata Duente (the curse is too harsh)</a>';
+        
+        choicesDiv.innerHTML = choicesHtml;
+        
+        updateInventoryDisplay();
+        
+        // define the functions for the choices
+        window.giveJadeOnly = function() {
+            let idx = gameState.inventory.indexOf('jade figurine');
+            if (idx !== -1) gameState.inventory.splice(idx, 1);
+            saveGame();
+            storyDiv.innerHTML = '<p>Tata Duente takes the figurine gently. "Mine. Good. But where is yours? Where is theirs?" He shakes his head. "Not enough. Go back. Bring more. The curse stays."</p>';
+            choicesDiv.innerHTML = '<a href="village-morning.html" class="btn">Return to village</a>';
+            updateInventoryDisplay();
+        };
+        
+        window.givePersonal = function() {
+            storyDiv.innerHTML = '<p>You reach into your pocket and pull out something precious to you. You offer it to Tata Duente.</p><p>He examines it quietly. "Yours. I feel your loss. Good. But the village must also give. Go. Bring their offering. Then we finish."</p>';
+            gameState.tataDuenteFavor = (gameState.tataDuenteFavor || 0) + 1;
+            saveGame();
+            choicesDiv.innerHTML = '<a href="village-morning.html" class="btn">Return to village for their offering</a>';
+        };
+        
+        window.challengeTata = function() {
+            storyDiv.innerHTML = '<p>"This curse is too harsh! The village didn\'t cut the tree - one fool did, and he\'s already dead. Why punish everyone?"</p><p>Tata Duente stares. Then, slowly, he laughs.</p><p>"Bold. Stupid. But bold." He scratches his chin. "You speak truth. One fool caused this. But the village forgot the old ways. They stopped teaching their children about the forest. That\'s why the fool didn\'t know not to cut my tree."</p><p>He considers.</p><p>"I\'ll make new deal. You teach. You make sure the village remembers. Tell the stories. Keep the old ways alive. Do this, and I lift the curse."</p>';
+            gameState.wisdom = (gameState.wisdom || 0) + 2;
+            gameState.tataDuenteFavor = (gameState.tataDuenteFavor || 0) + 1;
+            saveGame();
+            choicesDiv.innerHTML = '<a href="teaching-ending.html" class="btn">Agree to teach the village</a><br><a href="village-morning.html" class="btn">Refuse and return to village</a>';
+        };
+    </script>
+</body>
+</html>
