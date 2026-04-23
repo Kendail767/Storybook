@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bad Ending - Tata Duende's Curse</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="story">
+            <p>You couldn't find the waterfall. Or maybe you couldn't make the sacrifice. Days pass. The village grows quieter. People leave. The forest takes back the milpa, the houses, the church.</p>
+            
+            <p>Grandma Elodia is the last to go. She finds you sitting on the porch, staring at the jungle.</p>
+            
+            <p>"It's not your fault," she says gently. "Some curses are too big for one person."</p>
+            
+            <p>But you know the truth. You could have tried harder. Could have been braver. Could have...</p>
+            
+            <p>The ceiba tree at the village edge falls in a storm that night. No one plants a new one. The village becomes ghost stories told in other towns. "Did you hear about San Benito Po?" travelers ask. "Tata Duente took it back."</p>
+            
+            <p>You wander the forest now. Sometimes you see small footprints with backwards feet. Sometimes you hear laughter. You never find your way out.</p>
+            
+            <p><strong>THE END - The Village is Lost</strong></p>
+        </div>
+        <div class="choices">
+            <a href="#" onclick="resetGame()" class="btn">Try Again</a>
+            <a href="../index.html" class="btn">Return to Title Screen</a>
+        </div>
+        <div class="inventory">
+            <h3>Your Inventory</h3>
+            <ul id="inventory-list"></ul>
+        </div>
+    </div>
+    <script src="../js/game.js"></script>
+    <script>
+        loadGame();
+        updateInventoryDisplay();
+        localStorage.removeItem('tataDuenteGame');
+    </script>
+</body>
+</html>

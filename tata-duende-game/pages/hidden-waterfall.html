@@ -40,48 +40,88 @@
         }
         
         // now add the waterfall arrival text
-        storyDiv.innerHTML += '<hr><p>You\'ve found it. Hidden in a valley surrounded by ferns and orchids, water tumbles into a crystal pool. Rainbows dance in the spray. It\'s the most beautiful place you\'ve ever seen.</p><p>Sitting on a rock by the pool is a small figure. No more than three feet tall. Enormous hat. Backwards feet. No thumbs.</p><p>Tata Duente.</p><p>He watches you with ancient eyes. Then grins.</p><p>"Well. You made it. Most don\'t."</p><p>He hops off the rock, walks toward you.</p><p>"Now we talk. You come about the village curse, yes?"</p>';
+        storyDiv.innerHTML += '<hr><p>You\'ve found it. Hidden in a valley surrounded by ferns and orchids, water tumbles into a crystal pool. Rainbows dance in the spray. It\'s the most beautiful place you\'ve ever seen.</p><p>Sitting on a rock by the pool is a small figure. No more than three feet tall. Enormous hat. Backwards feet. No thumbs.</p><p>Tata Duente.</p><p>He watches you with ancient eyes. Then grins.</p><p>"Well. You made it. Most don\'t."</p><p>He hops off the rock, walks toward you.</p><p>"Now we talk. You come about the village curse, yes?"</p><p>He sits on a rock and waits for your answer.</p>';
         
-        // now show choices based on what player has
+        // check what items the player has
         let hasJade = gameState.inventory.includes('jade figurine');
-        let hasCopal = gameState.inventory.includes('copal') || gameState.inventory.includes('copal pouch');
+        let hasPersonalItem = gameState.inventory.includes('locket') || gameState.inventory.includes('photo') || gameState.wisdom >= 1;
+        let hasVillageItem = gameState.visitedLocations.includes('church') && gameState.visitedLocations.includes('cemetery');
         let favor = gameState.tataDuenteFavor || 0;
         
-        let choicesHtml = '';
+        // BUILD THE CHOICES BASED ON WHAT PLAYER HAS
+        let choicesHtml = '<p><strong>What do you offer Tata Duente?</strong></p>';
         
-        // always show option to give jade if they have it
+        // Option 1: Give back the jade
         if (hasJade) {
-            choicesHtml += '<a href="#" onclick="giveJadeOnly()" class="btn">Give back the jade figurine</a>';
+            choicesHtml += '<a href="#" onclick="giveJadeOnly()" class="btn">Give back the jade figurine (His)</a>';
         }
         
-        // option to offer something personal
-        choicesHtml += '<a href="#" onclick="givePersonal()" class="btn">Offer something personal (a sacrifice)</a>';
+        // Option 2: Offer something personal
+        choicesHtml += '<a href="#" onclick="givePersonal()" class="btn">Offer something personal (Yours)</a>';
         
-        // option to return to village for proof
-        choicesHtml += '<a href="village-morning.html" class="btn">Return to village for proof of their care</a>';
+        // Option 3: Show village proof
+        if (hasVillageItem) {
+            choicesHtml += '<a href="#" onclick="giveVillage()" class="btn">Offer proof the village cares (Theirs)</a>';
+        }
         
-        // challenge option
-        choicesHtml += '<a href="#" onclick="challengeTata()" class="btn">Challenge Tata Duente (the curse is too harsh)</a>';
+        // Option 4: Give ALL THREE (if they have all)
+        if (hasJade && hasPersonalItem && hasVillageItem) {
+            choicesHtml += '<hr><a href="#" onclick="giveAllThree()" class="btn" style="background-color:#b57d4a;">★ GIVE ALL THREE OFFERINGS ★</a>';
+        }
+        
+        // Option 5: Challenge him (always available)
+        choicesHtml += '<hr><a href="#" onclick="challengeTata()" class="btn">Challenge Tata Duente (The curse is too harsh!)</a>';
+        
+        // Option 6: Go back
+        choicesHtml += '<a href="jungle-path.html" class="btn">Return to the jungle (give up)</a>';
         
         choicesDiv.innerHTML = choicesHtml;
-        
         updateInventoryDisplay();
         
-        // define the functions for the choices
+        // ========== FUNCTION DEFINITIONS ==========
+        
         window.giveJadeOnly = function() {
             let idx = gameState.inventory.indexOf('jade figurine');
             if (idx !== -1) gameState.inventory.splice(idx, 1);
             saveGame();
-            storyDiv.innerHTML = '<p>Tata Duente takes the figurine gently. "Mine. Good. But where is yours? Where is theirs?" He shakes his head. "Not enough. Go back. Bring more. The curse stays."</p>';
-            choicesDiv.innerHTML = '<a href="village-morning.html" class="btn">Return to village</a>';
+            storyDiv.innerHTML = '<p>Tata Duente takes the figurine gently. "Mine. Good. But where is yours? Where is theirs?" He shakes his head. "Not enough. Go back. Bring more. The curse stays."</p><p>He disappears into the waterfall mist.</p>';
+            choicesDiv.innerHTML = '<a href="village-morning.html" class="btn">Return to village</a><br><a href="bad-ending.html" class="btn">Give up and leave the village forever</a>';
             updateInventoryDisplay();
         };
         
         window.givePersonal = function() {
             storyDiv.innerHTML = '<p>You reach into your pocket and pull out something precious to you. You offer it to Tata Duente.</p><p>He examines it quietly. "Yours. I feel your loss. Good. But the village must also give. Go. Bring their offering. Then we finish."</p>';
             gameState.tataDuenteFavor = (gameState.tataDuenteFavor || 0) + 1;
+            gameState.wisdom = (gameState.wisdom || 0) + 1;
             saveGame();
             choicesDiv.innerHTML = '<a href="village-morning.html" class="btn">Return to village for their offering</a>';
+        };
+        
+        window.giveVillage = function() {
+            storyDiv.innerHTML = '<p>You show Tata Duente the proof that the village still remembers and cares - the cross from the church, the soil from the cemetery.</p><p>He nods slowly. "They remember. Good. But you must also give something of yours. And you must return what was taken. Come back with all three, and we finish this."</p>';
+            gameState.tataDuenteFavor = (gameState.tataDuenteFavor || 0) + 1;
+            saveGame();
+            choicesDiv.innerHTML = '<a href="village-morning.html" class="btn">Return to village</a>';
+        };
+        
+        window.giveAllThree = function() {
+            // remove jade from inventory
+            let jadeIdx = gameState.inventory.indexOf('jade figurine');
+            if (jadeIdx !== -1) gameState.inventory.splice(jadeIdx, 1);
+            
+            storyDiv.innerHTML = '<p>You place:</p><ul><li>The jade figurine (his)</li><li>Something precious from your pocket (yours)</li><li>Proof from the church and cemetery (theirs)</li></ul><p>Tata Duente is silent for a long moment. Then he nods.</p><p>"Respect. Sacrifice. Community. You understand what my grandmother taught me." He stands, sprinkles water from the pool over the offerings. "The curse lifts at dawn. Tell your village - respect the forest. Respect the old ways. Or next time, I won\'t test their children. I\'ll take them."</p><p>He grins, but his eyes are kind. "You did well. Go home. And take this."</p><p>He hands you a small ceiba seedling.</p><p>"Plant it where the old one fell. Let the village care for it. Teach them why."</p>';
+            
+            gameState.curseActive = false;
+            gameState.tataDuenteFavor = (gameState.tataDuenteFavor || 0) + 3;
+            saveGame();
+            
+            // check if favor is high enough for secret ending
+            if (gameState.tataDuenteFavor >= 4) {
+                choicesDiv.innerHTML = '<a href="secret-ending.html" class="btn">Receive your reward (Secret Ending)</a>';
+            } else {
+                choicesDiv.innerHTML = '<a href="good-ending.html" class="btn">Return to the village (Good Ending)</a>';
+            }
+            updateInventoryDisplay();
         };
         
         window.challengeTata = function() {
@@ -89,7 +129,7 @@
             gameState.wisdom = (gameState.wisdom || 0) + 2;
             gameState.tataDuenteFavor = (gameState.tataDuenteFavor || 0) + 1;
             saveGame();
-            choicesDiv.innerHTML = '<a href="teaching-ending.html" class="btn">Agree to teach the village</a><br><a href="village-morning.html" class="btn">Refuse and return to village</a>';
+            choicesDiv.innerHTML = '<a href="teaching-ending.html" class="btn">Agree to teach the village</a><br><a href="bad-ending.html" class="btn">Refuse and abandon the village</a>';
         };
     </script>
 </body>

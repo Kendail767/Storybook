@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Teaching Ending - Tata Duende's Curse</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="story">
+            <p>You return to the village without completing the traditional offering, but with a new mission. You gather the children, the parents, the elders.</p>
+            
+            <p>"Sit down. I'm going to tell you stories."</p>
+            
+            <p>For weeks, you teach. The story of Tata Duente. La Llorona's tragedy. El Cadejo's warning. Anansi's tricks. The Sisimito's territory.</p>
+            
+            <p>You take children to the forest, showing them which trees are sacred. Which streams to avoid at night. How to leave offerings.</p>
+            
+            <p>Slowly, the village remembers.</p>
+            
+            <p>One morning, you wake to find the crops green and healthy. The air clean. The forest peaceful. At the base of the new ceiba tree, you find a small gift - a jade figurine of a man with a big hat. And a note in crude charcoal:</p>
+            
+            <p>"Good deal. We're even. Visit sometime. - T.D."</p>
+            
+            <p>You laugh, and laugh, and laugh.</p>
+            
+            <p><strong>THE END - The Old Ways Live On</strong></p>
+        </div>
+        <div class="choices">
+            <a href="#" onclick="resetGame()" class="btn">Play Again</a>
+            <a href="../index.html" class="btn">Return to Title Screen</a>
+        </div>
+        <div class="inventory">
+            <h3>Your Inventory</h3>
+            <ul id="inventory-list"></ul>
+        </div>
+    </div>
+    <script src="../js/game.js"></script>
+    <script>
+        loadGame();
+        updateInventoryDisplay();
+        localStorage.removeItem('tataDuenteGame');
+    </script>
+</body>
+</html>

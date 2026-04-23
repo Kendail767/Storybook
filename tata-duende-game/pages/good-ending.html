@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Good Ending - Tata Duende's Curse</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="story">
+            <p>You return to the village at dawn. As the sun rises, something changes. The air feels lighter. Birds sing louder. In the distance, howler monkeys roar - but it sounds like celebration.</p>
+            
+            <p>Grandma Elodia meets you at the edge of the village, tears in her eyes. "The crops. They're growing again. Overnight, they GREW."</p>
+            
+            <p>You show her the ceiba seedling that Tata Duente gave you. Together, you plant it where the old one fell. The whole village watches. Old Don Chico nods, approving.</p>
+            
+            <p>That night, there's a feast. Fry jacks and stew chicken, rice and beans, potato salad. Music plays - punta, brukdown, everything. Even Father Miguel comes, laughing.</p>
+            
+            <p>You see small footprints near the new ceiba tree at midnight. Backwards footprints. And beside them, an offering of honey and corn - from Tata Duente, thanking YOU.</p>
+            
+            <p>You smile, and dance until dawn.</p>
+            
+            <p><strong>THE END - The Curse is Lifted</strong></p>
+        </div>
+        <div class="choices">
+            <a href="#" onclick="resetGame()" class="btn">Play Again</a>
+            <a href="../index.html" class="btn">Return to Title Screen</a>
+        </div>
+        <div class="inventory">
+            <h3>Your Inventory</h3>
+            <ul id="inventory-list"></ul>
+        </div>
+    </div>
+    <script src="../js/game.js"></script>
+    <script>
+        loadGame();
+        updateInventoryDisplay();
+        // clear the save so they can't continue from an ending
+        localStorage.removeItem('tataDuenteGame');
+    </script>
+</body>
+</html>
