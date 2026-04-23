@@ -45,7 +45,7 @@
         // check what items the player has
         let hasJade = gameState.inventory.includes('jade figurine');
         let hasPersonalItem = gameState.inventory.includes('locket') || gameState.inventory.includes('photo') || gameState.wisdom >= 1;
-        let hasVillageItem = gameState.visitedLocations.includes('church') && gameState.visitedLocations.includes('cemetery');
+        let hasVillageItem = gameState.inventory.includes('village soil') || gameState.inventory.includes('ancestors blessing');
         let favor = gameState.tataDuenteFavor || 0;
         
         // BUILD THE CHOICES BASED ON WHAT PLAYER HAS
@@ -98,10 +98,17 @@
         };
         
         window.giveVillage = function() {
-            storyDiv.innerHTML = '<p>You show Tata Duente the proof that the village still remembers and cares - the cross from the church, the soil from the cemetery.</p><p>He nods slowly. "They remember. Good. But you must also give something of yours. And you must return what was taken. Come back with all three, and we finish this."</p>';
+            // remove the village item from inventory
+            let soilIdx = gameState.inventory.indexOf('village soil');
+            if (soilIdx !== -1) gameState.inventory.splice(soilIdx, 1);
+            let blessingIdx = gameState.inventory.indexOf('ancestors blessing');
+            if (blessingIdx !== -1) gameState.inventory.splice(blessingIdx, 1);
+            
+            storyDiv.innerHTML = '<p>You show Tata Duente the proof that the village still remembers and cares.</p><p>He nods slowly. "They remember. Good. But you must also give something of yours. And you must return what was taken. Come back with all three, and we finish this."</p>';
             gameState.tataDuenteFavor = (gameState.tataDuenteFavor || 0) + 1;
             saveGame();
             choicesDiv.innerHTML = '<a href="village-morning.html" class="btn">Return to village</a>';
+            updateInventoryDisplay();
         };
         
         window.giveAllThree = function() {
