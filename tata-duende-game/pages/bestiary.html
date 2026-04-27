@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Folklore Bestiary - Tata Duende's Curse</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📖 Folklore Bestiary</h1>
+        <p><em>As you journey through Belize, you learn about the spirits of the forest...</em></p>
+        
+        <div id="bestiary-content"></div>
+        
+        <div class="choices">
+            <a href="village-morning.html" class="btn">Return to Village</a>
+            <a href="jungle-path.html" class="btn">Return to Jungle</a>
+        </div>
+        
+        <div class="inventory">
+            <h3>Your Inventory</h3>
+            <ul id="inventory-list"></ul>
+        </div>
+    </div>
+    <script src="../js/game.js"></script>
+    <script>
+        loadGame();
+        updateInventoryDisplay();
+        
+        const bestiaryDiv = document.getElementById('bestiary-content');
+        let html = '';
+        
+        // Tata Duente
+        if (gameState.learnedFolklore.tataDuente || gameState.visitedLocations.includes('ceiba-grove.html') || gameState.visitedLocations.includes('hidden-waterfall.html')) {
+            html += '<div class="bestiary-entry"><h3>🌿 Tata Duente</h3><p>A small, bearded forest spirit with no thumbs and backwards feet. He wears a wide-brimmed hat and protects the jungle. If you disrespect the forest, he will curse you. Leave offerings of honey or corn to earn his favor.</p></div>';
+        } else {
+            html += '<div class="bestiary-entry locked"><h3>???</h3><p>You have not yet encountered this spirit. Explore the jungle and listen to the elders.</p></div>';
+        }
+        
+        // La Llorona
+        if (gameState.learnedFolklore.laLlorona || gameState.visitedLocations.includes('la-llorona-encounter.html')) {
+            html += '<div class="bestiary-entry"><h3>💧 La Llorona</h3><p>The weeping woman who drowned her children. She wanders rivers and creeks at night. If you hear crying, do not follow it. Walk away slowly, or use holy water to repel her.</p></div>';
+        } else {
+            html += '<div class="bestiary-entry locked"><h3>???</h3><p>You have not yet encountered this spirit. Be careful near water at dusk.</p></div>';
+        }
+        
+        // El Cadejo
+        if (gameState.learnedFolklore.cadejo || gameState.visitedLocations.includes('crossroads.html')) {
+            html += '<div class="bestiary-entry"><h3>🐕 El Cadejo</h3><p>A spectral dog that appears at crossroads at midnight. A white Cadejo protects travelers. A black Cadejo leads them to danger. Always follow the white dog.</p></div>';
+        } else {
+            html += '<div class="bestiary-entry locked"><h3>???</h3><p>You have not yet encountered this spirit. Travel at night and you might meet him.</p></div>';
+        }
+        
+        // Sisimito (optional, you can add later)
+        // Anansi (optional)
+        
+        bestiaryDiv.innerHTML = html;
+    </script>
+</body>
+</html>

@@ -72,6 +72,30 @@ function updateInventoryDisplay() {
             invList.appendChild(li);
         }
     }
+    
+    // Add a reset button inside the inventory box if it doesn't already have one
+    const invDiv = document.querySelector('.inventory');
+    if (invDiv && !document.getElementById('reset-btn-inside')) {
+        const resetBtn = document.createElement('button');
+        resetBtn.id = 'reset-btn-inside';
+        resetBtn.textContent = '⟳ New Game';
+        resetBtn.style.marginTop = '10px';
+        resetBtn.style.padding = '5px 10px';
+        resetBtn.style.backgroundColor = '#b57d4a';
+        resetBtn.style.border = 'none';
+        resetBtn.style.borderRadius = '5px';
+        resetBtn.style.cursor = 'pointer';
+        resetBtn.style.color = 'white';
+        resetBtn.style.fontWeight = 'bold';
+        resetBtn.onclick = function() {
+            if (confirm('Start a new game? Your current progress will be lost.')) {
+                localStorage.removeItem('tataDuenteGame');
+                // go to root index.html, which will redirect to prologue
+                window.location.href = '../index.html';
+            }
+        };
+        invDiv.appendChild(resetBtn);
+    }
 }
 
 // Track visited locations
