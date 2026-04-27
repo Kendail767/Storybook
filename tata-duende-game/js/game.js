@@ -159,37 +159,57 @@ function updateTimeDisplay() {
     }
 }
 
-const speakStory = function(event) {
+// A helper function to find a good voice for telling a story
+function getStorytellerVoice(voices) {
+    // 1. First, try to find a specific, high-quality male voice on your system
+    const targetNames = ["Google UK English Male", "Samantha", "Alex", "Microsoft David Desktop"];
+    let selectedVoice = voices.find(voice => targetNames.includes(voice.name));
+    
+    if (selectedVoice) return selectedVoice;
+
+    // 2. If not found, try to find any male English voice
+    selectedVoice = voices.find(voice => voice.lang.includes('en-') && voice.name.includes('Male'));
+    if (selectedVoice) return selectedVoice;
+
+    // 3. If still not found, just pick the first English voice available
+    selectedVoice = voices.find(voice => voice.lang.includes('en-'));
+    if (selectedVoice) return selectedVoice;
+
+    // 4. Fallback to the system's default voice
+    return voices.find(voice => voice.default) || voices[0];
+}
+
+// The main function to read the story
+const speakStory = function() {
+    // Stop any ongoing speech
     window.speechSynthesis.cancel();
 
     const storyText = document.querySelector('.story')?.innerText;
     if (!storyText) return;
 
-    const utterance = new SpeechSynthesisUtterance(storyText);
-    utterance.rate = 0.85;      // slower for storytelling
-    utterance.pitch = 0.9;      // slightly deeper
-    utterance.lang = 'en-US';
-
-    // Try to get a natural female voice (often better for stories)
-    // This runs asynchronously; we need to wait for voices to load
-    const setVoice = () => {
+    // Wait for voices to be loaded before trying to select one
+    window.speechSynthesis.onvoiceschanged = () => {
         const voices = window.speechSynthesis.getVoices();
-        // Look for a voice with "Google UK English Female" or "Samantha" or "Microsoft Zira"
-        let preferred = voices.find(voice => 
-            voice.name.includes('Google UK English Female') ||
-            voice.name.includes('Samantha') ||
-            voice.name.includes('Zira') ||
-            voice.name.includes('Female') ||
-            voice.name.includes('Story')
-        );
-        if (preferred) utterance.voice = preferred;
+        const utterance = new SpeechSynthesisUtterance(storyText);
+        
+        // Pick the best voice for the job
+        utterance.voice = getStorytellerVoice(voices);
+        
+        utterance.rate = 0.85;  // A slower rate adds to the dramatic effect
+        utterance.pitch = 0.9;  // A slightly lower pitch can feel more authoritative
+        utterance.lang = 'en-US';
+        
         window.speechSynthesis.speak(utterance);
     };
-
-    // Voices might already be loaded
-    if (window.speechSynthesis.getVoices().length) {
-        setVoice();
-    } else {
-        window.speechSynthesis.onvoiceschanged = setVoice;
-    }
 };
+
+function listAvailableVoices() {
+    // The voices list loads asynchronously, so we need to wait for it to be ready.
+    window.speechSynthesis.onvoiceschanged = () => {
+        const voices = window.speechSynthesis.getVoices();
+        console.log(`Found ${voices.length} voices on this device:`);
+        voices.forEach(voice => {
+            console.log(`- ${voice.name} (lang: ${voice.lang}, local: ${voice.localService})`);
+        });
+    };
+}
