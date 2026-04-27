@@ -159,57 +159,37 @@ function updateTimeDisplay() {
     }
 }
 
-// A helper function to find a good voice for telling a story
-function getStorytellerVoice(voices) {
-    // 1. First, try to find a specific, high-quality male voice on your system
-    const targetNames = ["Google UK English Male", "Samantha", "Alex", "Microsoft David Desktop"];
-    let selectedVoice = voices.find(voice => targetNames.includes(voice.name));
-    
-    if (selectedVoice) return selectedVoice;
+   // Add a Read Aloud button to every page that has a .story div
+function addReadButton() {
+    const storyDiv = document.querySelector('.story');
+    if (!storyDiv) return;
+    if (document.getElementById('readButton')) return;
 
-    // 2. If not found, try to find any male English voice
-    selectedVoice = voices.find(voice => voice.lang.includes('en-') && voice.name.includes('Male'));
-    if (selectedVoice) return selectedVoice;
+    const btn = document.createElement('button');
+    btn.id = 'readButton';
+    btn.textContent = '🔊 Read Story';
+    btn.className = 'btn';
+    btn.style.marginBottom = '15px';
+    btn.style.backgroundColor = '#6b8c5c';
 
-    // 3. If still not found, just pick the first English voice available
-    selectedVoice = voices.find(voice => voice.lang.includes('en-'));
-    if (selectedVoice) return selectedVoice;
+    storyDiv.parentNode.insertBefore(btn, storyDiv);
 
-    // 4. Fallback to the system's default voice
-    return voices.find(voice => voice.default) || voices[0];
-}
-
-// The main function to read the story
-const speakStory = function() {
-    // Stop any ongoing speech
-    window.speechSynthesis.cancel();
-
-    const storyText = document.querySelector('.story')?.innerText;
-    if (!storyText) return;
-
-    // Wait for voices to be loaded before trying to select one
-    window.speechSynthesis.onvoiceschanged = () => {
-        const voices = window.speechSynthesis.getVoices();
-        const utterance = new SpeechSynthesisUtterance(storyText);
-        
-        // Pick the best voice for the job
-        utterance.voice = getStorytellerVoice(voices);
-        
-        utterance.rate = 0.85;  // A slower rate adds to the dramatic effect
-        utterance.pitch = 0.9;  // A slightly lower pitch can feel more authoritative
+    const readStory = function() {
+        window.speechSynthesis.cancel();
+        const text = storyDiv.innerText;
+        if (!text) return;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
         utterance.lang = 'en-US';
-        
         window.speechSynthesis.speak(utterance);
     };
-};
 
-function listAvailableVoices() {
-    // The voices list loads asynchronously, so we need to wait for it to be ready.
-    window.speechSynthesis.onvoiceschanged = () => {
-        const voices = window.speechSynthesis.getVoices();
-        console.log(`Found ${voices.length} voices on this device:`);
-        voices.forEach(voice => {
-            console.log(`- ${voice.name} (lang: ${voice.lang}, local: ${voice.localService})`);
-        });
-    };
+    btn.addEventListener('click', readStory);
+    btn.addEventListener('touchstart', readStory);
 }
+
+// Call it when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    addReadButton();
+});
