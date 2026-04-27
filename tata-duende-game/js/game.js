@@ -159,22 +159,41 @@ function updateTimeDisplay() {
     }
 }
 
-document.getElementById('readStoryBtn').addEventListener('click', () => {
-    // 1. Get the text from your story div
-    const storyText = document.querySelector('.story').innerText;
-    
-    // 2. Stop any currently playing speech.
-    //    This prevents the game from overlapping voices.
-    window.speechSynthesis.cancel();
-    
-    // 3. Create a new speech request.
-    const utterance = new SpeechSynthesisUtterance(storyText);
-    
-    // (Optional) Customize the voice, rate, and pitch
-    // utterance.rate = 0.9;
-    // utterance.pitch = 1.1;
-    // utterance.lang = 'en-US';
-    
-    // 4. Speak!
-    window.speechSynthesis.speak(utterance);
-});
+function addReadAloudButton() {
+    const storyDiv = document.querySelector('.story');
+    if (!storyDiv) return;
+    if (document.getElementById('read-aloud-btn')) return;
+
+    const button = document.createElement('button');
+    button.id = 'read-aloud-btn';
+    button.textContent = '🔊 Read Story Aloud';
+    button.className = 'btn';
+    button.style.marginBottom = '15px';
+    button.style.backgroundColor = '#6b8c5c';
+
+    // Insert button above story
+    storyDiv.parentNode.insertBefore(button, storyDiv);
+
+    // Use both click and touchstart to ensure mobile catches it
+    const speakStory = function(event) {
+        // Stop any ongoing speech
+        window.speechSynthesis.cancel();
+
+        // Get text
+        let text = storyDiv.innerText || storyDiv.textContent;
+        if (!text) return;
+
+        // Create utterance immediately – no delay
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.9;
+        utterance.pitch = 1.0;
+        utterance.lang = 'en-US';
+
+        // On some mobile browsers, we need to "warm up" speechSynthesis
+        // by calling speak() with an empty string first. Not always needed.
+        window.speechSynthesis.speak(utterance);
+    };
+
+    button.addEventListener('click', speakStory);
+    button.addEventListener('touchstart', speakStory); // for mobile touch
+}
