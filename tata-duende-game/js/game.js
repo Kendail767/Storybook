@@ -158,3 +158,23 @@ function updateTimeDisplay() {
         timeElem.textContent = icon + ' ' + gameState.timeOfDay.toUpperCase();
     }
 }
+
+document.getElementById('readStoryBtn').addEventListener('click', () => {
+    // 1. Get the text from your story div
+    const storyText = document.querySelector('.story').innerText;
+    
+    // 2. Stop any currently playing speech.
+    //    This prevents the game from overlapping voices.
+    window.speechSynthesis.cancel();
+    
+    // 3. Create a new speech request.
+    const utterance = new SpeechSynthesisUtterance(storyText);
+    
+    // (Optional) Customize the voice, rate, and pitch
+    // utterance.rate = 0.9;
+    // utterance.pitch = 1.1;
+    // utterance.lang = 'en-US';
+    
+    // 4. Speak!
+    window.speechSynthesis.speak(utterance);
+});
