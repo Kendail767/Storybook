@@ -159,27 +159,71 @@ function updateTimeDisplay() {
     }
 }
 
-  function addReadButton() {
+ function addReadButton() {
     const storyDiv = document.querySelector('.story');
     if (!storyDiv) return;
     if (document.getElementById('readButton')) return;
 
     const btn = document.createElement('button');
     btn.id = 'readButton';
-    btn.textContent = '🔊 Read Story';
+    btn.textContent = '🔊 Read Story (Old Man Voice)';
     btn.className = 'btn';
     btn.style.marginBottom = '15px';
     btn.style.backgroundColor = '#6b8c5c';
 
     storyDiv.parentNode.insertBefore(btn, storyDiv);
 
+    // Helper: try to find a voice that sounds like an old male narrator
+    function getOldManVoice(voices) {
+        // Priority list – these are common male/natural voices across platforms
+        const preferredNames = [
+            'Google UK English Male',
+            'Microsoft David Desktop',
+            'Samantha',          // Actually female but sounds neutral, use as fallback
+            'Alex',              // Mac's male voice
+            'Daniel',            // Some Android devices
+            'Google US English',
+            'Fred'               // Some Windows TTS
+        ];
+        for (let name of preferredNames) {
+            let voice = voices.find(v => v.name.includes(name) && v.lang.includes('en'));
+            if (voice) return voice;
+        }
+        // Fallback: first male voice in English
+        let maleVoice = voices.find(v => v.lang.includes('en') && v.name.toLowerCase().includes('male'));
+        if (maleVoice) return maleVoice;
+        // Last resort: any English voice
+        return voices.find(v => v.lang.includes('en'));
+    }
+
     const readStory = function() {
         const text = storyDiv.innerText;
         if (!text) return;
+
+        // Cancel any ongoing speech (removed to avoid mobile issues? Let's keep it but be careful)
+        // On mobile, cancel() can block, but without it overlapping speech is annoying.
+        // We'll add a small delay to avoid conflict.
+        window.speechSynthesis.cancel();
+
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 0.9;
-        utterance.pitch = 1.0;
+        
+        // Set storyteller parameters: slow, low pitch
+        utterance.rate = 0.8;      // slower for dramatic effect
+        utterance.pitch = 0.65;     // lower = older, gruffer
         utterance.lang = 'en-US';
+
+        // Wait for voices to be loaded, then pick the best one
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length) {
+            utterance.voice = getOldManVoice(voices);
+        } else {
+            window.speechSynthesis.onvoiceschanged = () => {
+                utterance.voice = getOldManVoice(window.speechSynthesis.getVoices());
+                window.speechSynthesis.speak(utterance);
+            };
+            return; // will speak inside the event
+        }
+        
         window.speechSynthesis.speak(utterance);
     };
 
