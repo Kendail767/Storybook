@@ -159,41 +159,37 @@ function updateTimeDisplay() {
     }
 }
 
-function addReadAloudButton() {
-    const storyDiv = document.querySelector('.story');
-    if (!storyDiv) return;
-    if (document.getElementById('read-aloud-btn')) return;
+const speakStory = function(event) {
+    window.speechSynthesis.cancel();
 
-    const button = document.createElement('button');
-    button.id = 'read-aloud-btn';
-    button.textContent = '🔊 Read Story Aloud';
-    button.className = 'btn';
-    button.style.marginBottom = '15px';
-    button.style.backgroundColor = '#6b8c5c';
+    const storyText = document.querySelector('.story')?.innerText;
+    if (!storyText) return;
 
-    // Insert button above story
-    storyDiv.parentNode.insertBefore(button, storyDiv);
+    const utterance = new SpeechSynthesisUtterance(storyText);
+    utterance.rate = 0.85;      // slower for storytelling
+    utterance.pitch = 0.9;      // slightly deeper
+    utterance.lang = 'en-US';
 
-    // Use both click and touchstart to ensure mobile catches it
-    const speakStory = function(event) {
-        // Stop any ongoing speech
-        window.speechSynthesis.cancel();
-
-        // Get text
-        let text = storyDiv.innerText || storyDiv.textContent;
-        if (!text) return;
-
-        // Create utterance immediately – no delay
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 0.9;
-        utterance.pitch = 1.0;
-        utterance.lang = 'en-US';
-
-        // On some mobile browsers, we need to "warm up" speechSynthesis
-        // by calling speak() with an empty string first. Not always needed.
+    // Try to get a natural female voice (often better for stories)
+    // This runs asynchronously; we need to wait for voices to load
+    const setVoice = () => {
+        const voices = window.speechSynthesis.getVoices();
+        // Look for a voice with "Google UK English Female" or "Samantha" or "Microsoft Zira"
+        let preferred = voices.find(voice => 
+            voice.name.includes('Google UK English Female') ||
+            voice.name.includes('Samantha') ||
+            voice.name.includes('Zira') ||
+            voice.name.includes('Female') ||
+            voice.name.includes('Story')
+        );
+        if (preferred) utterance.voice = preferred;
         window.speechSynthesis.speak(utterance);
     };
 
-    button.addEventListener('click', speakStory);
-    button.addEventListener('touchstart', speakStory); // for mobile touch
-}
+    // Voices might already be loaded
+    if (window.speechSynthesis.getVoices().length) {
+        setVoice();
+    } else {
+        window.speechSynthesis.onvoiceschanged = setVoice;
+    }
+};
