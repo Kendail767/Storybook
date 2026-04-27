@@ -159,8 +159,7 @@ function updateTimeDisplay() {
     }
 }
 
-   // Add a Read Aloud button to every page that has a .story div
-function addReadButton() {
+  function addReadButton() {
     const storyDiv = document.querySelector('.story');
     if (!storyDiv) return;
     if (document.getElementById('readButton')) return;
@@ -175,7 +174,6 @@ function addReadButton() {
     storyDiv.parentNode.insertBefore(btn, storyDiv);
 
     const readStory = function() {
-        window.speechSynthesis.cancel();
         const text = storyDiv.innerText;
         if (!text) return;
         const utterance = new SpeechSynthesisUtterance(text);
@@ -188,8 +186,3 @@ function addReadButton() {
     btn.addEventListener('click', readStory);
     btn.addEventListener('touchstart', readStory);
 }
-
-// Call it when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    addReadButton();
-});
