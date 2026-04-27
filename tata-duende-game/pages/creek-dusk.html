@@ -7,6 +7,7 @@
 </head>
 <body>
     <div class="container">
+        <div id="time-indicator" style="margin-bottom:10px; font-weight:bold;"></div>
         <div class="story">
             <p>You've walked too long. The sun dips below the trees. The creek darkens. Shadows lengthen.</p>
             <p>Then you hear it.</p>
@@ -28,6 +29,10 @@
     </div>
     <script src="../js/game.js"></script>
     <script>
+    gameState.timeOfDay = 'dusk';
+    saveGame();
+    updateTimeDisplay();
+        
         // check if player has holy water before showing that option
         document.addEventListener('DOMContentLoaded', function() {
             loadGame();

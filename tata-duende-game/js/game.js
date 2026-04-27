@@ -138,6 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadGame();
     trackVisit();
     updateInventoryDisplay();
+    updateTimeDisplay();
 });
 
 // Make functions global for onclick attributes
@@ -145,3 +146,15 @@ window.takeItem = takeItem;
 window.removeItem = removeItem;
 window.learnFolklore = learnFolklore;
 window.resetGame = resetGame;
+
+function updateTimeDisplay() {
+    const timeElem = document.getElementById('time-indicator');
+    if (timeElem) {
+        let icon = '';
+        if (gameState.timeOfDay === 'morning') icon = '☀️';
+        else if (gameState.timeOfDay === 'dusk') icon = '🌙';
+        else if (gameState.timeOfDay === 'night') icon = '⭐';
+        else icon = '☀️';
+        timeElem.textContent = icon + ' ' + gameState.timeOfDay.toUpperCase();
+    }
+}

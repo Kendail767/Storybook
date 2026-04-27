@@ -7,6 +7,7 @@
 </head>
 <body>
     <div class="container">
+        <div id="time-indicator" style="margin-bottom:10px; font-weight:bold;"></div>
         <div class="story">
             <p>Morning breaks with roosters crowing and the smell of fry jacks and beans. The village seems normal in daylight – children play with tops, women hang laundry, men head to the milpa.</p>
             <p>But you notice:</p>
@@ -32,6 +33,10 @@
             <ul id="inventory-list"></ul>
         </div>
     </div>
-    <script src="../js/game.js"></script>
+    <script src="../js/game.js">
+        gameState.timeOfDay = 'morning';
+    saveGame();
+    updateTimeDisplay();
+    </script>
 </body>
 </html>

@@ -7,6 +7,7 @@
 </head>
 <body>
     <div class="container">
+        <div id="time-indicator" style="margin-bottom:10px; font-weight:bold;"></div>
         <div class="story">
             <p>You've walked deep into the night. The path ends at a crossroads - four directions meeting in absolute darkness. No moon. No stars.</p>
             <p>Then two shapes appear. Dogs. One pure white, eyes like golden suns. One jet black, eyes like burning coals. They sit on either side of the road, watching.</p>
@@ -24,6 +25,9 @@
             <ul id="inventory-list"></ul>
         </div>
     </div>
-    <script src="../js/game.js"></script>
+    <script src="../js/game.js">
+    gameState.timeOfDay = 'night';
+    saveGame();
+    updateTimeDisplay();</script>
 </body>
 </html>
