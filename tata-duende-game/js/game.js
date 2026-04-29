@@ -139,6 +139,9 @@ document.addEventListener('DOMContentLoaded', function() {
     trackVisit();
     updateInventoryDisplay();
     updateTimeDisplay();
+    addReadButton();
+    setTimeout(addReadButton, 500);
+
 });
 
 // Make functions global for onclick attributes
