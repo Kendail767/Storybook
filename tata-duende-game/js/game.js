@@ -159,7 +159,12 @@ function updateTimeDisplay() {
     }
 }
 
- function addReadButton() {
+
+
+
+
+
+function addReadButton() {
     const storyDiv = document.querySelector('.story');
     if (!storyDiv) return;
     if (document.getElementById('readButton')) return;
