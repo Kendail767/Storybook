@@ -205,9 +205,8 @@ function addReadButton() {
         const text = storyDiv.innerText;
         if (!text) return;
 
-        // Cancel any ongoing speech (removed to avoid mobile issues? Let's keep it but be careful)
-        // On mobile, cancel() can block, but without it overlapping speech is annoying.
-        // We'll add a small delay to avoid conflict.
+        // Cancel any ongoing speech
+        // add a small delay to avoid conflict.
         window.speechSynthesis.cancel();
 
         const utterance = new SpeechSynthesisUtterance(text);
