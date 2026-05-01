@@ -141,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateTimeDisplay();
     addReadButton();
     setTimeout(addReadButton, 500);
+    addPageImage();
 
 });
 
@@ -161,10 +162,6 @@ function updateTimeDisplay() {
         timeElem.textContent = icon + ' ' + gameState.timeOfDay.toUpperCase();
     }
 }
-
-
-
-
 
 
 function addReadButton() {
@@ -237,4 +234,39 @@ function addReadButton() {
 
     btn.addEventListener('click', readStory);
     btn.addEventListener('touchstart', readStory);
+}
+
+// Add page-specific image automatically
+function addPageImage() {
+    // Get current page filename (e.g., "prologue.html")
+    const page = window.location.pathname.split('/').pop().replace('.html', '');
+    if (!page) return;
+
+    // Look for an image with the same name (prologue.jpg, etc.)
+    const imgSrc = `../pictures/${page}.jpg`;
+    
+    // Check if image already exists on page to avoid duplicates
+    if (document.querySelector('.page-image')) return;
+
+    // Find the container or the story div
+    const container = document.querySelector('.container');
+    if (!container) return;
+
+    // Create image element
+    const img = document.createElement('img');
+    img.src = imgSrc;
+    img.alt = `Illustration for ${page.replace(/-/g, ' ')}`;
+    img.className = 'page-image';
+    img.style.cssText = 'width:100%; max-width:600px; height:auto; display:block; margin:0 auto 20px auto; border-radius:15px; box-shadow:0 2px 8px rgba(0,0,0,0.1);';
+
+    // Insert at the top of container, after time-indicator if exists
+    const timeIndicator = document.getElementById('time-indicator');
+    if (timeIndicator && timeIndicator.nextSibling) {
+        container.insertBefore(img, timeIndicator.nextSibling);
+    } else {
+        container.insertBefore(img, container.firstChild);
+    }
+
+    // If image fails to load (404), remove it silently
+    img.onerror = function() { this.remove(); };
 }
